@@ -1,6 +1,6 @@
 import pytest
 
-from  tags.game import is_game_finished,handle_user_input,shuffle_field
+from  tags.game import is_game_finished,handle_user_input,shuffle_field,perform_move
 
 def test_shuffle_field():
     """
@@ -39,5 +39,14 @@ def test_is_game_finished(FieldFinishGame,FieldNotFinishGame):
     assert is_game_finished(FieldFinishGame) == True
     assert is_game_finished(FieldNotFinishGame) == False
 
+def test_perform_move(FieldSetOnBorder):
+    """ Проверяем правильность обработки пограничных значений ходов и пвозможность делать правильные ходы"""
+    assert  perform_move(FieldSetOnBorder[0],'w') == None
+    assert perform_move(FieldSetOnBorder[1], 's') == None
+    assert perform_move(FieldSetOnBorder[2], 'a') == None
+    assert perform_move(FieldSetOnBorder[3], 'd') == None
 
-
+    assert perform_move(FieldSetOnBorder[0], 's') != None
+    assert perform_move(FieldSetOnBorder[1], 'd') != None
+    assert perform_move(FieldSetOnBorder[2], 'w') != None
+    assert perform_move(FieldSetOnBorder[3], 'a') != None
