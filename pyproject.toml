@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.8"
 pytest = "^7.4.0"
 pytest-mock = "^3.11.1"
+pytest-cov = "^4.1.0"
+interruptingcow = "^0.8"
 
 
 [build-system]

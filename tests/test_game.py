@@ -1,6 +1,8 @@
 import pytest
+import asyncio
+from interruptingcow import timeout
 
-from  tags.game import is_game_finished,handle_user_input,shuffle_field,perform_move
+from  tags.game import is_game_finished,handle_user_input,shuffle_field,perform_move,main
 
 def test_shuffle_field():
     """
@@ -17,7 +19,7 @@ def test_shuffle_field():
         Fields.append(NewFileld)
         i=i+1
 
-def test_handelr_user_input(mocker):
+def test_handle_user_input(mocker):
     """
     Проверяем корректность обработки пользовательского ввода
     """
@@ -41,7 +43,7 @@ def test_is_game_finished(FieldFinishGame,FieldNotFinishGame):
 
 def test_perform_move(FieldSetOnBorder):
     """ Проверяем правильность обработки пограничных значений ходов и пвозможность делать правильные ходы"""
-    assert  perform_move(FieldSetOnBorder[0],'w') == None
+    assert perform_move(FieldSetOnBorder[0], 'w') == None
     assert perform_move(FieldSetOnBorder[1], 's') == None
     assert perform_move(FieldSetOnBorder[2], 'a') == None
     assert perform_move(FieldSetOnBorder[3], 'd') == None
@@ -50,3 +52,29 @@ def test_perform_move(FieldSetOnBorder):
     assert perform_move(FieldSetOnBorder[1], 'd') != None
     assert perform_move(FieldSetOnBorder[2], 'w') != None
     assert perform_move(FieldSetOnBorder[3], 'a') != None
+
+
+
+def test_main_quit(capfd,mocker):
+    """ Проверяем возможность выхода из игры"""
+    mocker.patch('tags.game.handle_user_input', return_value='q')
+    main()
+    out,error = capfd.readouterr()
+    assert '\nBye bye!' in out
+
+def test_main_invalid_move(capfd, mocker,FieldNotFinishGame):
+    mocker.patch('tags.game.handle_user_input', return_value='d')
+    mocker.patch('tags.game.shuffle_field', return_value=FieldNotFinishGame)
+    try:
+        with timeout(2, exception=asyncio.CancelledError):
+            main().run_forever()
+    except asyncio.CancelledError:
+        out, error = capfd.readouterr()
+        assert 'Invalid move!' in out
+
+def test_main_win(capfd, mocker,FieldBeforeFinishGame):
+    mocker.patch('tags.game.handle_user_input', return_value='a')
+    mocker.patch('tags.game.shuffle_field', return_value=FieldBeforeFinishGame)
+    main().run_once()
+    out, error = capfd.readouterr()
+    assert 'You win ! !' in out
