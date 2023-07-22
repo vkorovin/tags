@@ -112,6 +112,9 @@ def handle_user_input():
         return "q"
 
 
+def always_true():
+    return True
+
 def main():
     """
     The main function. It starts when the program is called.
@@ -121,7 +124,7 @@ def main():
     """
     field = shuffle_field()
     moves_count = 0
-    while True:
+    while always_true():
          print_field(field)
          move = handle_user_input()
          while not move:
