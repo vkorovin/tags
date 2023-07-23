@@ -36,6 +36,8 @@ def test_handle_user_input(mocker):
     assert handle_user_input() == 's'
     mocker.patch('builtins.input', return_value='d')
     assert handle_user_input() == 'd'
+    mocker.patch('builtins.input', return_value='q')
+    assert handle_user_input() == 'q'
 
 
 def test_is_game_finished(FieldFinishGame,FieldNotFinishGame):

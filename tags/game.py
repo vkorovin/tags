@@ -1,12 +1,5 @@
-# `random` module is used to shuffle field, see:
-# https://docs.python.org/3/library/random.html#random.shuffle
 import random
-
-# Empty tile, there's only one empty cell on a field:
 EMPTY_MARK = 'x'
-
-# Dictionary of possible moves if a form of:
-# key -> delta to move the empty tile on a field.
 MOVES = {
     'w': -4,
     's': 4,
@@ -102,15 +95,11 @@ def handle_user_input():
 
     :return: <str> current move.
     """
-    #pass
-    try:
-        move = input()
-        if move in "wasd" and move!='':
-            return move
-        return None
-    except KeyboardInterrupt:
-        return "q"
 
+    move = input()
+    if move in "wasdq" and move!='':
+        return move
+    return None
 
 def always_true():
     return True
